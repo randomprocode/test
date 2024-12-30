@@ -81,13 +81,9 @@ Execute-Commands
 function Revert-Configure-BAM {
     Write-Host "Configurazione del servizio BAM per l'avvio automatico..." -ForegroundColor Yellow
     try {
-        # Esegui il comando con privilegi elevati
-        $configService = Start-Process -FilePath "sc.exe" -ArgumentList "config", "bam", "start=auto" -PassThru -Wait -Verb RunAs
-        if ($configService.ExitCode -eq 0) {
-            Write-Host "Servizio BAM configurato per l'avvio automatico." -ForegroundColor Green
-        } else {
-            Write-Host "Errore durante la configurazione del servizio BAM. Codice di uscita: $($configService.ExitCode)" -ForegroundColor Red
-        }
+        # Usa Set-Service per impostare il servizio BAM su avvio automatico
+        Set-Service -Name "bam" -StartupType Automatic
+        Write-Host "Servizio BAM configurato per l'avvio automatico." -ForegroundColor Green
     } catch {
         Write-Host "Errore durante la configurazione del servizio BAM: $_" -ForegroundColor Red
     }
@@ -96,17 +92,14 @@ function Revert-Configure-BAM {
 function Revert-Start-BAM {
     Write-Host "Avvio del servizio BAM..." -ForegroundColor Yellow
     try {
-        # Esegui il comando con privilegi elevati
-        $startService = Start-Process -FilePath "sc.exe" -ArgumentList "start", "bam" -PassThru -Wait -Verb RunAs
-        if ($startService.ExitCode -eq 0) {
-            Write-Host "Servizio BAM avviato con successo." -ForegroundColor Green
-        } else {
-            Write-Host "Errore durante l'avvio del servizio BAM. Codice di uscita: $($startService.ExitCode)" -ForegroundColor Red
-        }
+        # Usa Start-Service per avviare il servizio BAM
+        Start-Service -Name "bam"
+        Write-Host "Servizio BAM avviato con successo." -ForegroundColor Green
     } catch {
         Write-Host "Errore durante l'avvio del servizio BAM: $_" -ForegroundColor Red
     }
 }
+
 
 function Revert-Configure-DiagTrack {
     Write-Host "Configurazione del servizio DiagTrack per l'avvio automatico..." -ForegroundColor Yellow
