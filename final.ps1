@@ -81,9 +81,15 @@ Execute-Commands
 function Revert-Configure-BAM {
     Write-Host "Configurazione del servizio BAM per l'avvio automatico..." -ForegroundColor Yellow
     try {
-        # Esegui il comando con privilegi elevati
-        Start-Process powershell -ArgumentList "Set-Service -Name 'bam' -StartupType Automatic" -Verb RunAs -Wait
-        Write-Host "Servizio BAM configurato per l'avvio automatico." -ForegroundColor Green
+        # Verifica se il servizio è già configurato per l'avvio automatico
+        $service = Get-Service -Name "bam"
+        if ($service.StartType -eq 'Automatic') {
+            Write-Host "Il servizio BAM è già configurato per l'avvio automatico." -ForegroundColor Green
+        } else {
+            # Elevazione dei privilegi per configurare il servizio
+            Start-Process powershell -ArgumentList "Set-Service -Name 'bam' -StartupType Automatic" -Verb RunAs -Wait
+            Write-Host "Servizio BAM configurato per l'avvio automatico." -ForegroundColor Green
+        }
     } catch {
         Write-Host "Errore durante la configurazione del servizio BAM: $_" -ForegroundColor Red
     }
@@ -92,14 +98,19 @@ function Revert-Configure-BAM {
 function Revert-Start-BAM {
     Write-Host "Avvio del servizio BAM..." -ForegroundColor Yellow
     try {
-        # Esegui il comando con privilegi elevati
-        Start-Process powershell -ArgumentList "Start-Service -Name 'bam'" -Verb RunAs -Wait
-        Write-Host "Servizio BAM avviato con successo." -ForegroundColor Green
+        # Verifica lo stato del servizio
+        $service = Get-Service -Name "bam"
+        if ($service.Status -eq 'Running') {
+            Write-Host "Il servizio BAM è già in esecuzione." -ForegroundColor Green
+        } else {
+            # Elevazione dei privilegi per avviare il servizio
+            Start-Process powershell -ArgumentList "Start-Service -Name 'bam'" -Verb RunAs -Wait
+            Write-Host "Servizio BAM avviato con successo." -ForegroundColor Green
+        }
     } catch {
         Write-Host "Errore durante l'avvio del servizio BAM: $_" -ForegroundColor Red
     }
 }
-
 
 
 function Revert-Configure-DiagTrack {
