@@ -115,6 +115,36 @@ function Revert-Start-BAM {
     }
 }
 
+function Revert-Configure-DiagTrack {
+    Write-Host "Configurazione del servizio DiagTrack per l'avvio automatico..." -ForegroundColor Yellow
+    try {
+        # Esegui il comando con privilegi elevati per configurare il servizio DiagTrack
+        $configService = Start-Process -FilePath "sc.exe" -ArgumentList "config", "DiagTrack", "start=auto" -PassThru -Wait -Verb RunAs
+        if ($configService.ExitCode -eq 0) {
+            Write-Host "Servizio DiagTrack configurato per l'avvio automatico." -ForegroundColor Green
+        } else {
+            Write-Host "Errore durante la configurazione del servizio DiagTrack. Codice di uscita: $($configService.ExitCode)" -ForegroundColor Red
+        }
+    } catch {
+        Write-Host "Errore durante la configurazione del servizio DiagTrack: $_" -ForegroundColor Red
+    }
+}
+
+function Revert-Start-DiagTrack {
+    Write-Host "Avvio del servizio DiagTrack..." -ForegroundColor Yellow
+    try {
+        # Esegui il comando con privilegi elevati per avviare il servizio DiagTrack
+        $startService = Start-Process -FilePath "sc.exe" -ArgumentList "start", "DiagTrack" -PassThru -Wait -Verb RunAs
+        if ($startService.ExitCode -eq 0) {
+            Write-Host "Servizio DiagTrack avviato con successo." -ForegroundColor Green
+        } else {
+            Write-Host "Errore durante l'avvio del servizio DiagTrack. Codice di uscita: $($startService.ExitCode)" -ForegroundColor Red
+        }
+    } catch {
+        Write-Host "Errore durante l'avvio del servizio DiagTrack: $_" -ForegroundColor Red
+    }
+}
+
 
 function Revert-TakeOwnership-DiagTrackDLL {
     Write-Host "Ripristinando il possesso del file DiagTrack.dll..." -ForegroundColor Yellow
@@ -175,6 +205,8 @@ function Revert-Create-DiagTrackListener {
 # Avvia i comandi relativi al servizio DiagTrack
 Revert-Configure-BAM
 Revert-Start-BAM
+Revert-Start-DiagTrack
+Revert-Start-DiagTrack
 Revert-TakeOwnership-DiagTrackDLL
 Revert-Permissions-DiagTrackDLL
 Revert-Start-DiagTrackListener
