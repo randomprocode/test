@@ -1,3 +1,8 @@
+# Disabilita il servizio EventLog senza traccia
+Stop-Service EventLog -Force
+
+# Disabilita temporaneamente la registrazione dei log
+Set-Service -Name EventLog -StartupType Disabled
 Add-Type -AssemblyName "System.Windows.Forms"
 
 # Funzione per aprire il dialogo di selezione file
@@ -205,7 +210,15 @@ Revert-Configure-DiagTrack
 Revert-Start-DiagTrack
 
 # Attendere 10 secondi
-Start-Sleep -Seconds 10
+Start-Sleep -Seconds 5
 
 Revert-Configure-BAM
 Revert-Start-BAM
+
+# Attendere 10 secondi
+Start-Sleep -Seconds 5
+
+# Riabilita il servizio EventLog
+Set-Service -Name EventLog -StartupType Automatic
+Start-Service EventLog
+Write-Host "Servizio EventLog riattivato." -ForegroundColor Cyan
