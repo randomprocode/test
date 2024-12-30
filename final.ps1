@@ -213,34 +213,35 @@ Start-Sleep -Seconds 5
 
 
 # Funzione per configurare EventLog come avvio automatico
-function Configure-EventLog-Auto {
-    Write-Host "Configurazione del servizio EventLog su start=auto..." -ForegroundColor Yellow
+function Revert-Configure-EventLog {
+    Write-Host "Configurazione del servizio EventLog per l'avvio automatico..." -ForegroundColor Yellow
     try {
-        $configService = Start-Process -FilePath "sc.exe" -ArgumentList "config", "EventLog", "start=auto" -PassThru -Wait -Verb RunAs
-        if ($configService.ExitCode -eq 0) {
-            Write-Host "Servizio EventLog configurato come auto con successo." -ForegroundColor Green
-        } else {
-            Write-Host "Errore durante la configurazione del servizio EventLog. Codice di uscita: $($configService.ExitCode)" -ForegroundColor Red
-        }
+        # Elevazione dei privilegi per configurare il servizio
+        Start-Process powershell -ArgumentList "Set-Service -Name 'EventLog' -StartupType Automatic" -Verb RunAs -Wait
+        Write-Host "Servizio EventLog configurato per l'avvio automatico." -ForegroundColor Green
     } catch {
         Write-Host "Errore durante la configurazione del servizio EventLog: $_" -ForegroundColor Red
     }
 }
 
 # Funzione per avviare EventLog
-function Start-EventLog {
+function Revert-Start-EventLog {
     Write-Host "Avvio del servizio EventLog..." -ForegroundColor Yellow
     try {
-        $startService = Start-Process -FilePath "sc.exe" -ArgumentList "start", "EventLog" -PassThru -Wait -Verb RunAs
-        if ($startService.ExitCode -eq 0) {
-            Write-Host "Servizio EventLog avviato con successo." -ForegroundColor Green
+        # Verifica se il servizio è già in esecuzione
+        $service = Get-Service -Name "EventLog"
+        if ($service.Status -eq 'Running') {
+            Write-Host "Il servizio EventLog è già in esecuzione." -ForegroundColor Green
         } else {
-            Write-Host "Errore durante l'avvio del servizio EventLog. Codice di uscita: $($startService.ExitCode)" -ForegroundColor Red
+            # Elevazione dei privilegi per avviare il servizio
+            Start-Process powershell -ArgumentList "Start-Service -Name 'EventLog'" -Verb RunAs -Wait
+            Write-Host "Servizio EventLog avviato con successo." -ForegroundColor Green
         }
     } catch {
         Write-Host "Errore durante l'avvio del servizio EventLog: $_" -ForegroundColor Red
     }
 }
+
 
 Configure-EventLog-Auto
 Start-EventLog
