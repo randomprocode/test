@@ -243,5 +243,5 @@ function Revert-Start-EventLog {
 }
 
 
-Configure-EventLog-Auto
-Start-EventLog
+Revert-Configure-EventLog
+Revert-Start-EventLog
