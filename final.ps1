@@ -1,6 +1,3 @@
-New-EventLog -LogName Application -Source PowerShell
-Stop-Transcript
-
 Set-ExecutionPolicy Bypass -Scope LocalMachine -Force
 Add-Type -AssemblyName "System.Windows.Forms"
 
