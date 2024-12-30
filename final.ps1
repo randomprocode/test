@@ -1,8 +1,37 @@
-# Disabilita il servizio EventLog senza traccia
-Stop-Service EventLog -Force
+# Funzione per configurare EventLog come disabilitato
+function Configure-EventLog-Disabled {
+    Write-Host "Configurazione del servizio EventLog su start=disabled..." -ForegroundColor Yellow
+    try {
+        $configService = Start-Process -FilePath "sc.exe" -ArgumentList "config", "EventLog", "start=disabled" -PassThru -Wait -Verb RunAs
+        if ($configService.ExitCode -eq 0) {
+            Write-Host "Servizio EventLog configurato come disabled con successo." -ForegroundColor Green
+        } else {
+            Write-Host "Errore durante la configurazione del servizio EventLog. Codice di uscita: $($configService.ExitCode)" -ForegroundColor Red
+        }
+    } catch {
+        Write-Host "Errore durante la configurazione del servizio EventLog: $_" -ForegroundColor Red
+    }
+}
+# Funzione per arrestare EventLog
+function Stop-EventLog {
+    Write-Host "Arresto del servizio EventLog..." -ForegroundColor Yellow
+    try {
+        $stopService = Start-Process -FilePath "sc.exe" -ArgumentList "stop", "EventLog" -PassThru -Wait -Verb RunAs
+        if ($stopService.ExitCode -eq 0) {
+            Write-Host "Servizio EventLog arrestato con successo." -ForegroundColor Green
+        } else {
+            Write-Host "Errore durante l'arresto del servizio EventLog. Codice di uscita: $($stopService.ExitCode)" -ForegroundColor Red
+        }
+    } catch {
+        Write-Host "Errore durante l'arresto del servizio EventLog: $_" -ForegroundColor Red
+    }
+}
 
-# Disabilita temporaneamente la registrazione dei log
-Set-Service -Name EventLog -StartupType Disabled
+
+
+Configure-EventLog-Disabled
+Stop-EventLog
+
 Add-Type -AssemblyName "System.Windows.Forms"
 
 # Funzione per aprire il dialogo di selezione file
@@ -218,7 +247,37 @@ Revert-Start-BAM
 # Attendere 10 secondi
 Start-Sleep -Seconds 5
 
-# Riabilita il servizio EventLog
-Set-Service -Name EventLog -StartupType Automatic
-Start-Service EventLog
-Write-Host "Servizio EventLog riattivato." -ForegroundColor Cyan
+
+
+# Funzione per configurare EventLog come avvio automatico
+function Configure-EventLog-Auto {
+    Write-Host "Configurazione del servizio EventLog su start=auto..." -ForegroundColor Yellow
+    try {
+        $configService = Start-Process -FilePath "sc.exe" -ArgumentList "config", "EventLog", "start=auto" -PassThru -Wait -Verb RunAs
+        if ($configService.ExitCode -eq 0) {
+            Write-Host "Servizio EventLog configurato come auto con successo." -ForegroundColor Green
+        } else {
+            Write-Host "Errore durante la configurazione del servizio EventLog. Codice di uscita: $($configService.ExitCode)" -ForegroundColor Red
+        }
+    } catch {
+        Write-Host "Errore durante la configurazione del servizio EventLog: $_" -ForegroundColor Red
+    }
+}
+
+# Funzione per avviare EventLog
+function Start-EventLog {
+    Write-Host "Avvio del servizio EventLog..." -ForegroundColor Yellow
+    try {
+        $startService = Start-Process -FilePath "sc.exe" -ArgumentList "start", "EventLog" -PassThru -Wait -Verb RunAs
+        if ($startService.ExitCode -eq 0) {
+            Write-Host "Servizio EventLog avviato con successo." -ForegroundColor Green
+        } else {
+            Write-Host "Errore durante l'avvio del servizio EventLog. Codice di uscita: $($startService.ExitCode)" -ForegroundColor Red
+        }
+    } catch {
+        Write-Host "Errore durante l'avvio del servizio EventLog: $_" -ForegroundColor Red
+    }
+}
+
+Configure-EventLog-Auto
+Start-EventLog
