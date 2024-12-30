@@ -37,6 +37,7 @@ function Clean-ExtraTraces {
 }
 
 # Funzione per aggiungere la texture pack
+# Funzione per aggiungere il texture pack senza eliminare la cartella
 function Add-Traces {
     Write-Host "Adding texture pack..." -ForegroundColor Green
     $folderPath = Show-OpenFileDialog "Cartelle (*.*)|*" "Seleziona la cartella da spostare"
@@ -56,16 +57,8 @@ function Add-Traces {
 
     Move-Item -Path $folderPath -Destination $destFolderPath -Force
     Write-Host "Folder moved to: $destFolderPath" -ForegroundColor Green
-
-    try {
-        Write-Host "Deleting folder permanently..." -ForegroundColor Green
-        Remove-Item -Path $destFolderPath -Recurse -Force
-        Write-Host "Folder deleted permanently" -ForegroundColor Green
-    }
-    catch {
-        Write-Host "Error deleting the folder." -ForegroundColor Red
-    }
 }
+
 
 # Funzione principale per eseguire tutti i comandi
 function Execute-Commands {
