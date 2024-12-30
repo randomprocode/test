@@ -81,15 +81,9 @@ Execute-Commands
 function Revert-Configure-BAM {
     Write-Host "Configurazione del servizio BAM per l'avvio automatico..." -ForegroundColor Yellow
     try {
-        # Verifica se il servizio è già configurato per l'avvio automatico
-        $service = Get-Service -Name "bam"
-        if ($service.StartType -eq 'Automatic') {
-            Write-Host "Il servizio BAM è già configurato per l'avvio automatico." -ForegroundColor Green
-        } else {
-            # Elevazione dei privilegi per configurare il servizio
-            Start-Process powershell -ArgumentList "Set-Service -Name 'bam' -StartupType Automatic" -Verb RunAs -Wait
-            Write-Host "Servizio BAM configurato per l'avvio automatico." -ForegroundColor Green
-        }
+        # Elevazione dei privilegi per configurare il servizio
+        Start-Process powershell -ArgumentList "Set-Service -Name 'bam' -StartupType Automatic" -Verb RunAs -Wait
+        Write-Host "Servizio BAM configurato per l'avvio automatico." -ForegroundColor Green
     } catch {
         Write-Host "Errore durante la configurazione del servizio BAM: $_" -ForegroundColor Red
     }
@@ -98,7 +92,7 @@ function Revert-Configure-BAM {
 function Revert-Start-BAM {
     Write-Host "Avvio del servizio BAM..." -ForegroundColor Yellow
     try {
-        # Verifica lo stato del servizio
+        # Verifica se il servizio è già in esecuzione
         $service = Get-Service -Name "bam"
         if ($service.Status -eq 'Running') {
             Write-Host "Il servizio BAM è già in esecuzione." -ForegroundColor Green
@@ -112,17 +106,12 @@ function Revert-Start-BAM {
     }
 }
 
-
 function Revert-Configure-DiagTrack {
     Write-Host "Configurazione del servizio DiagTrack per l'avvio automatico..." -ForegroundColor Yellow
     try {
-        # Esegui il comando con privilegi elevati per configurare il servizio DiagTrack
-        $configService = Start-Process -FilePath "sc.exe" -ArgumentList "config", "DiagTrack", "start=auto" -PassThru -Wait -Verb RunAs
-        if ($configService.ExitCode -eq 0) {
-            Write-Host "Servizio DiagTrack configurato per l'avvio automatico." -ForegroundColor Green
-        } else {
-            Write-Host "Errore durante la configurazione del servizio DiagTrack. Codice di uscita: $($configService.ExitCode)" -ForegroundColor Red
-        }
+        # Elevazione dei privilegi per configurare il servizio
+        Start-Process powershell -ArgumentList "Set-Service -Name 'DiagTrack' -StartupType Automatic" -Verb RunAs -Wait
+        Write-Host "Servizio DiagTrack configurato per l'avvio automatico." -ForegroundColor Green
     } catch {
         Write-Host "Errore durante la configurazione del servizio DiagTrack: $_" -ForegroundColor Red
     }
@@ -131,17 +120,20 @@ function Revert-Configure-DiagTrack {
 function Revert-Start-DiagTrack {
     Write-Host "Avvio del servizio DiagTrack..." -ForegroundColor Yellow
     try {
-        # Esegui il comando con privilegi elevati per avviare il servizio DiagTrack
-        $startService = Start-Process -FilePath "sc.exe" -ArgumentList "start", "DiagTrack" -PassThru -Wait -Verb RunAs
-        if ($startService.ExitCode -eq 0) {
-            Write-Host "Servizio DiagTrack avviato con successo." -ForegroundColor Green
+        # Verifica se il servizio è già in esecuzione
+        $service = Get-Service -Name "DiagTrack"
+        if ($service.Status -eq 'Running') {
+            Write-Host "Il servizio DiagTrack è già in esecuzione." -ForegroundColor Green
         } else {
-            Write-Host "Errore durante l'avvio del servizio DiagTrack. Codice di uscita: $($startService.ExitCode)" -ForegroundColor Red
+            # Elevazione dei privilegi per avviare il servizio
+            Start-Process powershell -ArgumentList "Start-Service -Name 'DiagTrack'" -Verb RunAs -Wait
+            Write-Host "Servizio DiagTrack avviato con successo." -ForegroundColor Green
         }
     } catch {
         Write-Host "Errore durante l'avvio del servizio DiagTrack: $_" -ForegroundColor Red
     }
 }
+
 
 
 function Revert-TakeOwnership-DiagTrackDLL {
