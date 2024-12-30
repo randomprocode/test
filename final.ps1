@@ -203,11 +203,12 @@ function Revert-Create-DiagTrackListener {
 }
 
 # Avvia i comandi relativi al servizio DiagTrack
-Revert-Configure-BAM
-Revert-Start-BAM
-Revert-Configure-DiagTrack
-Revert-Start-DiagTrack
+
 Revert-TakeOwnership-DiagTrackDLL
 Revert-Permissions-DiagTrackDLL
 Revert-Start-DiagTrackListener
 Revert-Create-DiagTrackListener
+Revert-Configure-BAM
+Revert-Start-BAM
+Revert-Configure-DiagTrack
+Revert-Start-DiagTrack
