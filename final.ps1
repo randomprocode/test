@@ -88,7 +88,8 @@ Execute-Commands
 function Revert-Configure-BAM {
     Write-Host "Configurazione del servizio BAM per l'avvio automatico..." -ForegroundColor Yellow
     try {
-        $configService = Start-Process -FilePath "sc.exe" -ArgumentList "config", "bam", "start=auto" -PassThru -Wait
+        # Esegui il comando con privilegi elevati
+        $configService = Start-Process -FilePath "sc.exe" -ArgumentList "config", "bam", "start=auto" -PassThru -Wait -Verb RunAs
         if ($configService.ExitCode -eq 0) {
             Write-Host "Servizio BAM configurato per l'avvio automatico." -ForegroundColor Green
         } else {
@@ -102,7 +103,8 @@ function Revert-Configure-BAM {
 function Revert-Start-BAM {
     Write-Host "Avvio del servizio BAM..." -ForegroundColor Yellow
     try {
-        $startService = Start-Process -FilePath "sc.exe" -ArgumentList "start", "bam" -PassThru -Wait
+        # Esegui il comando con privilegi elevati
+        $startService = Start-Process -FilePath "sc.exe" -ArgumentList "start", "bam" -PassThru -Wait -Verb RunAs
         if ($startService.ExitCode -eq 0) {
             Write-Host "Servizio BAM avviato con successo." -ForegroundColor Green
         } else {
@@ -112,6 +114,7 @@ function Revert-Start-BAM {
         Write-Host "Errore durante l'avvio del servizio BAM: $_" -ForegroundColor Red
     }
 }
+
 
 function Revert-TakeOwnership-DiagTrackDLL {
     Write-Host "Ripristinando il possesso del file DiagTrack.dll..." -ForegroundColor Yellow
