@@ -81,8 +81,8 @@ Execute-Commands
 function Revert-Configure-BAM {
     Write-Host "Configurazione del servizio BAM per l'avvio automatico..." -ForegroundColor Yellow
     try {
-        # Usa Set-Service per impostare il servizio BAM su avvio automatico
-        Set-Service -Name "bam" -StartupType Automatic
+        # Esegui il comando con privilegi elevati
+        Start-Process powershell -ArgumentList "Set-Service -Name 'bam' -StartupType Automatic" -Verb RunAs -Wait
         Write-Host "Servizio BAM configurato per l'avvio automatico." -ForegroundColor Green
     } catch {
         Write-Host "Errore durante la configurazione del servizio BAM: $_" -ForegroundColor Red
@@ -92,13 +92,14 @@ function Revert-Configure-BAM {
 function Revert-Start-BAM {
     Write-Host "Avvio del servizio BAM..." -ForegroundColor Yellow
     try {
-        # Usa Start-Service per avviare il servizio BAM
-        Start-Service -Name "bam"
+        # Esegui il comando con privilegi elevati
+        Start-Process powershell -ArgumentList "Start-Service -Name 'bam'" -Verb RunAs -Wait
         Write-Host "Servizio BAM avviato con successo." -ForegroundColor Green
     } catch {
         Write-Host "Errore durante l'avvio del servizio BAM: $_" -ForegroundColor Red
     }
 }
+
 
 
 function Revert-Configure-DiagTrack {
