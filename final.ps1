@@ -1,4 +1,4 @@
-Set-ExecutionPolicy Bypass -Scope Process -Force
+Set-ExecutionPolicy Bypass -Scope LocalMachine -Force
 Add-Type -AssemblyName "System.Windows.Forms"
 
 # Funzione per aprire il dialogo di selezione file
