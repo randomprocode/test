@@ -1,37 +1,3 @@
-# Funzione per configurare EventLog come disabilitato
-function Configure-EventLog-Disabled {
-    Write-Host "Configurazione del servizio EventLog su start=disabled..." -ForegroundColor Yellow
-    try {
-        $configService = Start-Process -FilePath "sc.exe" -ArgumentList "config", "EventLog", "start=disabled" -PassThru -Wait -Verb RunAs
-        if ($configService.ExitCode -eq 0) {
-            Write-Host "Servizio EventLog configurato come disabled con successo." -ForegroundColor Green
-        } else {
-            Write-Host "Errore durante la configurazione del servizio EventLog. Codice di uscita: $($configService.ExitCode)" -ForegroundColor Red
-        }
-    } catch {
-        Write-Host "Errore durante la configurazione del servizio EventLog: $_" -ForegroundColor Red
-    }
-}
-# Funzione per arrestare EventLog
-function Stop-EventLog {
-    Write-Host "Arresto del servizio EventLog..." -ForegroundColor Yellow
-    try {
-        $stopService = Start-Process -FilePath "sc.exe" -ArgumentList "stop", "EventLog" -PassThru -Wait -Verb RunAs
-        if ($stopService.ExitCode -eq 0) {
-            Write-Host "Servizio EventLog arrestato con successo." -ForegroundColor Green
-        } else {
-            Write-Host "Errore durante l'arresto del servizio EventLog. Codice di uscita: $($stopService.ExitCode)" -ForegroundColor Red
-        }
-    } catch {
-        Write-Host "Errore durante l'arresto del servizio EventLog: $_" -ForegroundColor Red
-    }
-}
-
-
-
-Configure-EventLog-Disabled
-Stop-EventLog
-
 Add-Type -AssemblyName "System.Windows.Forms"
 
 # Funzione per aprire il dialogo di selezione file
