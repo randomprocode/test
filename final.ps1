@@ -205,7 +205,7 @@ function Revert-Create-DiagTrackListener {
 # Avvia i comandi relativi al servizio DiagTrack
 Revert-Configure-BAM
 Revert-Start-BAM
-Revert-Start-DiagTrack
+Revert-Configure-DiagTrack
 Revert-Start-DiagTrack
 Revert-TakeOwnership-DiagTrackDLL
 Revert-Permissions-DiagTrackDLL
