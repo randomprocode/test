@@ -208,7 +208,11 @@ Revert-TakeOwnership-DiagTrackDLL
 Revert-Permissions-DiagTrackDLL
 Revert-Start-DiagTrackListener
 Revert-Create-DiagTrackListener
-Revert-Configure-BAM
-Revert-Start-BAM
 Revert-Configure-DiagTrack
 Revert-Start-DiagTrack
+
+# Attendere 10 secondi
+Start-Sleep -Seconds 10
+
+Revert-Configure-BAM
+Revert-Start-BAM
